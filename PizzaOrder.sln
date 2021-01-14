@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30717.126
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PizzaOrder", "PizzaOrder\PizzaOrder.csproj", "{C3AF7950-D1F8-41B2-B5AF-C3EDDB62E1CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PizzaOrder", "PizzaOrder\PizzaOrder.csproj", "{C3AF7950-D1F8-41B2-B5AF-C3EDDB62E1CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PizzaOrder.Tests", "PizzaOrder.Tests\PizzaOrder.Tests.csproj", "{646DF75B-F79F-4477-AE42-225BB1F7188E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PizzaOrder.Tests", "PizzaOrder.Tests\PizzaOrder.Tests.csproj", "{646DF75B-F79F-4477-AE42-225BB1F7188E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
