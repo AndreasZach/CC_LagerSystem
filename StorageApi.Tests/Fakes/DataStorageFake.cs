@@ -8,7 +8,7 @@ namespace StorageApi.Tests.Fakes
 {
     class DataStorageFake : IDataStorage
     {
-        public DataStorageFake(int availableItemCount)
+        public DataStorageFake(int availableItemCount = 0)
         {
             StoredItems = new List<StorageItem>
             {
