@@ -94,13 +94,12 @@ namespace StorageApi.Tests
         }
 
         [TestMethod]
-        public void Getting_all_items_Should_return_Ok_result()
+        public void Getting_all_items_Should_return_all_items()
         {
             var storageFake = new DataStorageFake(10);
             var controller = new StorageController(new DataRepository(storageFake));
-            var result = (controller.GetAllItems() as OkObjectResult);
-            Assert.AreEqual(200, result?.StatusCode);
-            Assert.AreEqual(storageFake.StoredItems, result?.Value);
+            var result = (controller.Index() as ViewResult);
+            Assert.AreEqual(storageFake.StoredItems, result?.Model);
         }
 
     }

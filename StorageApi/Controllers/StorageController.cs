@@ -6,10 +6,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using StorageApi.Exceptions;
 using StorageApi.Interfaces;
+using StorageApi.Models;
 
 namespace StorageApi.Controllers
 {
-    [Route("api/[controller]")]
     public class StorageController : Controller
     {
         private IDataRepository _repository;
@@ -19,12 +19,12 @@ namespace StorageApi.Controllers
             _repository = repository;
         }
 
-        [HttpGet("{itemName}")]
-        public IActionResult GetItemCount(string itemName)
+        [HttpGet("{id}")]
+        public IActionResult GetItemCount(string id)
         {
             try
             {
-                return Ok(_repository.GetItemCount(itemName));
+                return Ok(_repository.GetItemCount(id));
             }
             catch (NotFoundException e)
             {
@@ -32,12 +32,12 @@ namespace StorageApi.Controllers
             }
         }
 
-        [HttpPut("Add/{itemName}")]
-        public IActionResult AddItemAmount(string itemName, int amountToAdd)
+        [HttpPost]
+        public IActionResult AddItemAmount(string id, int amountToAdd)
         {
             try
             {
-                _repository.AddItemAmount(itemName, amountToAdd);
+                _repository.AddItemAmount(id, amountToAdd);
                 return NoContent();
             }
             catch (NotFoundException e)
@@ -50,12 +50,12 @@ namespace StorageApi.Controllers
             }
         }
 
-        [HttpPut("Remove/{itemName}")]
-        public IActionResult RemoveItemAmount(string itemName, int amountToRemove)
+        [HttpPost]
+        public IActionResult RemoveItemAmount(string id, int amountToRemove)
         {
             try
             {
-                _repository.RemoveItemAmount(itemName, amountToRemove);
+                _repository.RemoveItemAmount(id, amountToRemove);
                 return NoContent();
             }
             catch (NotFoundException e)
@@ -68,7 +68,7 @@ namespace StorageApi.Controllers
             }
         }
 
-        [HttpPut("Mass-delivery")]
+        [HttpPost]
         public IActionResult AddItemAmountToAll()
         {
             try
@@ -82,9 +82,9 @@ namespace StorageApi.Controllers
             }
         }
 
-        public IActionResult GetAllItems()
+        public IActionResult Index()
         {
-            return Ok(_repository.GetAllItems());
+            return View(_repository.GetAllItems());
         }
     }
 }

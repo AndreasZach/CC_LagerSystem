@@ -1,0 +1,49 @@
+﻿@model IEnumerable<StorageApi.Models.StorageItem>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<form method="post" action="@Url.Action("AddItemAmountToAll", "Storage")" onsubmit="setTimeout(function () { window.location.reload(); }, 50)">
+    <input id="Addtoallsubmit" type="submit" value="Add 10 to all" />
+</form>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.ItemName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AvailableItemsCount) (Max 500)
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ItemName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AvailableItemsCount)
+            </td>
+            <td>
+                <form method="post" action="@Url.Action("AddItemAmount", "Storage")" onsubmit="setTimeout(function () { window.location.reload(); }, 50)">
+                    <input id="Add-@item.ItemName-name" name="id" value="@item.ItemName" type="hidden" />
+                    <input id="Add-@item.ItemName-amount" type="number" name="amountToAdd" min="0" max="500" />
+                    <input id="Add-@item.ItemName-submit" type="submit" value="Add item/s" />
+                </form>
+                <form method="post" action="@Url.Action("RemoveItemAmount", "Storage")" onsubmit="setTimeout(function () { window.location.reload(); }, 50)">
+                    <input id="Remove-@item.ItemName-name" name="id" value="@item.ItemName" type="hidden" />
+                    <input id="Remove-@item.ItemName-amount" type="number" name="amountToRemove" min="0" max="500" />
+                    <input id="Remove-@item.ItemName-submit" type="submit" value="Remove item/s" />
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
