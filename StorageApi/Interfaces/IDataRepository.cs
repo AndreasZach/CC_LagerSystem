@@ -12,5 +12,7 @@ namespace StorageApi.Interfaces
         void AddItemAmount(string itemName, int amountToAdd);
 
         void RemoveItemAmount(string itemName, int amountToRemove);
+
+        void AddItemAmountToAll();
     }
 }

@@ -44,5 +44,15 @@ namespace StorageApi.Data
                 throw new EmptyStorageException("Item amount for requested item cannot be negative.");
             _storage.StoredItems[itemIndex].AvailableItemsCount -= amountToRemove;
         }
+
+        public void AddItemAmountToAll()
+        {
+            if(_storage.StoredItems.Any(item => item.AvailableItemsCount + 10 > 500))
+                throw new FullStorageException($"Item amount exceeded max storage capacity.");
+            foreach (var item in _storage.StoredItems)
+            {
+                item.AvailableItemsCount += 10;
+            }
+        }
     }
 }

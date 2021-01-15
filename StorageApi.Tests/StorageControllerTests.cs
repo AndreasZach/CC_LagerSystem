@@ -77,5 +77,21 @@ namespace StorageApi.Tests
             Assert.AreEqual(400, result?.StatusCode);
         }
 
+        [TestMethod]
+        public void Adding_items_to_all_Should_return_no_content_result_If_successful()
+        {
+            var controller = new StorageController(new DataRepository(new DataStorageFake(1)));
+            var result = (controller.AddItemAmountToAll() as NoContentResult);
+            Assert.AreEqual(204, result?.StatusCode);
+        }
+
+        [TestMethod]
+        public void Adding_items_to_all_Should_return_bad_request_result_If_any_item_exceeds_max_capacity()
+        {
+            var controller = new StorageController(new DataRepository(new DataStorageFake(499)));
+            var result = (controller.AddItemAmountToAll() as BadRequestObjectResult);
+            Assert.AreEqual(400, result?.StatusCode);
+        }
+
     }
 }

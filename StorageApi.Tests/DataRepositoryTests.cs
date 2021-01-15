@@ -73,5 +73,19 @@ namespace StorageApi.Tests
                 repo.RemoveItemAmount("Ost", 1));
         }
 
+        [TestMethod]
+        public void Add_items_to_all_Should_succeed_without_throwing_exceptions()
+        {
+            var repo = new DataRepository(new DataStorageFake());
+            repo.AddItemAmountToAll();
+        }
+
+        [TestMethod]
+        public void Add_items_to_all_Should_throw_FullStorageException_If_any_item_exceeds_storage_capacity()
+        {
+            var repo = new DataRepository(new DataStorageFake(499));
+            Assert.ThrowsException<FullStorageException>(() => repo.AddItemAmountToAll());
+        }
+
     }
 }

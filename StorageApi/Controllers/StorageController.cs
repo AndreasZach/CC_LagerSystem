@@ -9,6 +9,7 @@ using StorageApi.Interfaces;
 
 namespace StorageApi.Controllers
 {
+    [Route("api/[controller]")]
     public class StorageController : Controller
     {
         private IDataRepository _repository;
@@ -18,6 +19,7 @@ namespace StorageApi.Controllers
             _repository = repository;
         }
 
+        [HttpGet("{itemName}")]
         public IActionResult GetItemCount(string itemName)
         {
             try
@@ -30,7 +32,7 @@ namespace StorageApi.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPut("Add/{itemName}")]
         public IActionResult AddItemAmount(string itemName, int amountToAdd)
         {
             try
@@ -48,7 +50,7 @@ namespace StorageApi.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPut("Remove/{itemName}")]
         public IActionResult RemoveItemAmount(string itemName, int amountToRemove)
         {
             try
@@ -65,5 +67,20 @@ namespace StorageApi.Controllers
                 return BadRequest(e.Message);
             }
         }
+
+        [HttpPut("Mass-delivery")]
+        public IActionResult AddItemAmountToAll()
+        {
+            try
+            {
+                _repository.AddItemAmountToAll();
+                return NoContent();
+            }
+            catch (FullStorageException e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
     }
 }
