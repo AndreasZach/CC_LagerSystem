@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StorageApi.Data;
@@ -85,6 +86,14 @@ namespace StorageApi.Tests
         {
             var repo = new DataRepository(new DataStorageFake(499));
             Assert.ThrowsException<FullStorageException>(() => repo.AddItemAmountToAll());
+        }
+
+        [TestMethod]
+        public void Getting_all_storage_items_Should_return_collection_of_items()
+        {
+            var storageFake = new DataStorageFake(10);
+            var repo = new DataRepository(storageFake);
+            Assert.AreEqual(storageFake.StoredItems, repo.GetAllItems());
         }
 
     }

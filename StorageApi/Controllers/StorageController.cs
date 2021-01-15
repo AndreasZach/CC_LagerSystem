@@ -82,5 +82,9 @@ namespace StorageApi.Controllers
             }
         }
 
+        public IActionResult GetAllItems()
+        {
+            return Ok(_repository.GetAllItems());
+        }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using StorageApi.Exceptions;
 using StorageApi.Interfaces;
+using StorageApi.Models;
 
 namespace StorageApi.Data
 {
@@ -53,6 +54,11 @@ namespace StorageApi.Data
             {
                 item.AvailableItemsCount += 10;
             }
+        }
+
+        public IEnumerable<StorageItem> GetAllItems()
+        {
+            return _storage.StoredItems;
         }
     }
 }
