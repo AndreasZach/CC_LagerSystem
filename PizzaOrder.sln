@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PizzaOrder", "PizzaOrder\Pi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PizzaOrder.Tests", "PizzaOrder.Tests\PizzaOrder.Tests.csproj", "{646DF75B-F79F-4477-AE42-225BB1F7188E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StorageApi", "StorageApi\StorageApi.csproj", "{E253D7C8-376A-473D-B15A-DD2AD3FCF2DB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StorageApi.Tests", "StorageApi.Tests\StorageApi.Tests.csproj", "{9BE49E2D-8088-405E-AD9A-22263C5833EE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{646DF75B-F79F-4477-AE42-225BB1F7188E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{646DF75B-F79F-4477-AE42-225BB1F7188E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{646DF75B-F79F-4477-AE42-225BB1F7188E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E253D7C8-376A-473D-B15A-DD2AD3FCF2DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E253D7C8-376A-473D-B15A-DD2AD3FCF2DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E253D7C8-376A-473D-B15A-DD2AD3FCF2DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E253D7C8-376A-473D-B15A-DD2AD3FCF2DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9BE49E2D-8088-405E-AD9A-22263C5833EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BE49E2D-8088-405E-AD9A-22263C5833EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BE49E2D-8088-405E-AD9A-22263C5833EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BE49E2D-8088-405E-AD9A-22263C5833EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
