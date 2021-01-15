@@ -6,7 +6,7 @@ using StorageApi.Models;
 
 namespace StorageApi.Interfaces
 {
-    public interface IStorageRepository
+    public interface IDataStorage
     { 
         List<StorageItem> StoredItems { get; set; }
     }

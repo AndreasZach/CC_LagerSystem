@@ -7,9 +7,9 @@ using StorageApi.Models;
 
 namespace StorageApi.Data
 {
-    public class StorageRepository : IStorageRepository
+    public class DataStorage : IDataStorage
     {
-        public StorageRepository()
+        public DataStorage()
         {
             StoredItems = new List<StorageItem>
             {

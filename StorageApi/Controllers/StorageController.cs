@@ -10,9 +10,9 @@ namespace StorageApi.Controllers
 {
     public class StorageController : Controller
     {
-        private IStorageRepository _repository;
+        private IDataStorage _repository;
 
-        public StorageController(IStorageRepository repository)
+        public StorageController(IDataStorage repository)
         {
             _repository = repository;
         }

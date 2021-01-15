@@ -6,9 +6,9 @@ using StorageApi.Models;
 
 namespace StorageApi.Tests.Fakes
 {
-    class StorageRepositoryFake : IStorageRepository
+    class DataStorageFake : IDataStorage
     {
-        public StorageRepositoryFake(int availableItemCount)
+        public DataStorageFake(int availableItemCount)
         {
             StoredItems = new List<StorageItem>
             {

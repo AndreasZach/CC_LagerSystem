@@ -8,7 +8,7 @@ using StorageApi.Data;
 namespace StorageApi.Tests
 {
     [TestClass]
-    public class StorageRepositoryTests
+    public class DataStorageTests
     {
         [DataTestMethod]
         [DataRow("Ost", 0)]
@@ -30,7 +30,7 @@ namespace StorageApi.Tests
         [DataRow("Sprite", 0)]
         public void Should_contain_default_data_on_creation(string itemName, int itemAmount)
         {
-            var repo = new StorageRepository();
+            var repo = new DataStorage();
             var storageItem = repo.StoredItems.Where(x => x.ItemName == itemName).ToList();
             Assert.IsTrue(storageItem.Count(x => x.ItemName == itemName) == 1);
             Assert.AreEqual(storageItem.First().AvailableItemsCount, itemAmount);
@@ -39,7 +39,7 @@ namespace StorageApi.Tests
         [TestMethod]
         public void Should_change_item_amount()
         {
-            var repo = new StorageRepository();
+            var repo = new DataStorage();
             Assert.AreEqual(repo.StoredItems.First().AvailableItemsCount, 0);
             repo.StoredItems.First().AvailableItemsCount = 5;
             Assert.AreEqual(repo.StoredItems.First().AvailableItemsCount, 5);
