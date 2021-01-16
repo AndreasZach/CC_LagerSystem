@@ -1,0 +1,13 @@
+version: '3.4'
+
+services:
+  pizzaorder:
+    image: ${DOCKER_REGISTRY-}pizzaorder
+    build:
+      context: .
+      dockerfile: PizzaOrder/Dockerfile
+  storage:
+      image: ${DOCKER_REGISTRY-}storage
+      build:
+        context: .
+        dockerfile: StorageApi/Dockerfile

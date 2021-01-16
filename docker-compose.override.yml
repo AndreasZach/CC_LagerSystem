@@ -1,0 +1,13 @@
+version: '3.4'
+
+services:
+  pizzaorder:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "7500:80"
+  storage:
+      environment:
+        - ASPNETCORE_ENVIRONMENT=Development
+      ports:
+        - "7501:80"
