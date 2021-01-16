@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using PizzaOrder.Interfaces;
 
 namespace PizzaOrder.Controllers {
     [ApiController]
@@ -12,7 +13,8 @@ namespace PizzaOrder.Controllers {
     public class OrdersController : Controller {
         private OrderableController orderableController = new OrderableController();
         private List<Order> orders;
-        private int orderIndex = 1;
+        private IStorageApiClient client;
+        private Storage _storage;
         private List<IAddable> addables = new List<IAddable>() {
             new Topping("Skinka", 10),
             new Topping("Ananas", 10),
@@ -26,16 +28,18 @@ namespace PizzaOrder.Controllers {
             new Topping("Koriander", 20)
         };
 
-        public OrdersController(Storage storage) {
+        public OrdersController(Storage storage, IStorageApiClient client) {
             orders = storage.data;
+            _storage = storage;
+            this.client = client;
         }
 
         [HttpPost]
         public Order Create(IEnumerable<string> itemNames) {
             var items = itemNames.Select(x => orderableController.GetOrderable(x)).ToList();
-            var order = new Order(orderIndex, items);
+            var order = new Order(_storage.Index, items);
             orders.Add(order);
-            orderIndex++;
+            _storage.Index++;
             return order;
         }
 
@@ -81,13 +85,15 @@ namespace PizzaOrder.Controllers {
         }
 
         [HttpPut("/Confirm")]
-        public Order Confirm(int orderId) {
+        public async Task<Order> Confirm(int orderId) {
             var order = Get(orderId);
             if (order.Status == Order.OrderStatus.Created)
                 order.Status = Order.OrderStatus.Confirmed;
             else {
                 throw new InvalidOperationException("Can only confirm orders with OrderStatus 'Created'");
             }
+
+            await client.RemoveFromStorage(orders.Find(x => x.Id == orderId));
             return order;
         }
 

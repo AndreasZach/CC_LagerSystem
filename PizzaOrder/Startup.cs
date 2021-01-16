@@ -10,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using PizzaOrder.Integrations;
+using PizzaOrder.Interfaces;
 
 namespace PizzaOrder {
     public class Startup {
@@ -26,6 +28,8 @@ namespace PizzaOrder {
             services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "PizzaOrder", Version = "v1" });
             });
+            services.AddScoped<IStorageApiClient, StorageApiClient>();
+            services.AddHttpClient<StorageApiClient>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

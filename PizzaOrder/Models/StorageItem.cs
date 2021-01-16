@@ -1,4 +1,4 @@
-﻿namespace StorageApi.Models
+﻿namespace PizzaOrder.Models
 {
     public class StorageItem
     {

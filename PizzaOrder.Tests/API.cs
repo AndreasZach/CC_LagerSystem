@@ -3,6 +3,8 @@ using PizzaOrder.Controllers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using PizzaOrder.Tests.Fakes;
 
 namespace PizzaOrder.Tests {
     [TestClass]
@@ -57,7 +59,7 @@ namespace PizzaOrder.Tests {
         [TestMethod]
         public void Create_Order_should_return_correct_values_with_both_pizza_and_drink() {
             var inputNames = new List<string>() { "Hawaii", "Fanta", "Kebabpizza" };
-            var controller = new OrdersController(new Storage());
+            var controller = new OrdersController(new Storage(), new StorageApiClientFake());
             var actual = controller.Create(inputNames);
             Assert.AreEqual(1, actual.Id);
             Assert.AreEqual(Order.OrderStatus.Created, actual.Status);
@@ -72,7 +74,7 @@ namespace PizzaOrder.Tests {
         [TestMethod]
         public void Create_Order_should_return_correct_values_if_no_drinks() {
             var inputNames = new List<string>() { "Hawaii","Kebabpizza" };
-            var controller = new OrdersController(new Storage());
+            var controller = new OrdersController(new Storage(), new StorageApiClientFake());
             var actual = controller.Create(inputNames);
             Assert.AreEqual(1, actual.Id);
             Assert.AreEqual(Order.OrderStatus.Created, actual.Status);
@@ -87,7 +89,7 @@ namespace PizzaOrder.Tests {
         [TestMethod]
         public void Create_Order_should_return_correct_values_if_no_pizzas() {
             var inputNames = new List<string>() { "Fanta" };
-            var controller = new OrdersController(new Storage());
+            var controller = new OrdersController(new Storage(), new StorageApiClientFake());
             var actual = controller.Create(inputNames);
             Assert.AreEqual(1, actual.Id);
             Assert.AreEqual(Order.OrderStatus.Created, actual.Status);
@@ -102,7 +104,7 @@ namespace PizzaOrder.Tests {
         [TestMethod]
         public void Remove_from_Order_should_succeed() {
             var inputNames = new List<string>() { "Fanta" };
-            var controller = new OrdersController(new Storage());
+            var controller = new OrdersController(new Storage(), new StorageApiClientFake());
             controller.Create(inputNames);
             controller.RemoveItemFromOrder(1, "Fanta");
             var actual = controller.Get(1);
@@ -114,7 +116,7 @@ namespace PizzaOrder.Tests {
         [TestMethod]
         public void Remove_from_Order_should_throw_expected_exception_if_item_does_not_exist() {
             var inputNames = new List<string>() { "Coca cola" };
-            var controller = new OrdersController(new Storage());
+            var controller = new OrdersController(new Storage(), new StorageApiClientFake());
             controller.Create(inputNames);
             Assert.ThrowsException<ArgumentNullException>(() => controller.RemoveItemFromOrder(1, "Fanta"));
         }
@@ -122,7 +124,7 @@ namespace PizzaOrder.Tests {
         [TestMethod]
         public void Add_to_Order_should_succeed() {
             var inputNames = new List<string>() { "Fanta" };
-            var controller = new OrdersController(new Storage());
+            var controller = new OrdersController(new Storage(), new StorageApiClientFake());
             controller.Create(inputNames);
             controller.AddItemToOrder(1, "Coca cola");
             var actual = controller.Get(1);
@@ -134,7 +136,7 @@ namespace PizzaOrder.Tests {
         [TestMethod]
         public void Add_to_Order_should_throw_expected_exception_if_item_does_not_exist() {
             var inputNames = new List<string>() { "Coca cola" };
-            var controller = new OrdersController(new Storage());
+            var controller = new OrdersController(new Storage(), new StorageApiClientFake());
             controller.Create(inputNames);
             Assert.ThrowsException<ArgumentNullException>(() => controller.AddItemToOrder(1, "Rymdpizza"));
         }
@@ -142,7 +144,7 @@ namespace PizzaOrder.Tests {
         [TestMethod]
         public void Add_Addables_to_pizza_should_succeed() {
             var inputNames = new List<string>() { "Hawaii", "Fanta", "Kebabpizza" };
-            var controller = new OrdersController(new Storage());
+            var controller = new OrdersController(new Storage(), new StorageApiClientFake());
             controller.Create(inputNames);
             var inputAddable = "Kebab";
             var actual = controller.Get(1);
@@ -155,7 +157,7 @@ namespace PizzaOrder.Tests {
         [TestMethod]
         public void Add_Addables_to_pizza_should_throw_expected_exception_if_addable_does_not_exist() {
             var inputNames = new List<string>() { "Hawaii", "Fanta", "Kebabpizza" };
-            var controller = new OrdersController(new Storage());
+            var controller = new OrdersController(new Storage(), new StorageApiClientFake());
             controller.Create(inputNames);
             var inputAddable = "Vacuum";
             Assert.ThrowsException<ArgumentNullException>(() => controller.AddAddable(1, 2, inputAddable));
@@ -164,7 +166,7 @@ namespace PizzaOrder.Tests {
         [TestMethod]
         public void Remove_Addables_to_pizza_should_succeed() {
             var inputNames = new List<string>() { "Hawaii", "Fanta", "Kebabpizza" };
-            var controller = new OrdersController(new Storage());
+            var controller = new OrdersController(new Storage(), new StorageApiClientFake());
             controller.Create(inputNames);
             var inputAddable = "Kebab";
             var actual = controller.Get(1);
@@ -179,30 +181,30 @@ namespace PizzaOrder.Tests {
         [TestMethod]
         public void Remove_Addables_to_pizza_should_throw_expected_exception_if_addable_does_not_exist() {
             var inputNames = new List<string>() { "Hawaii", "Fanta", "Kebabpizza" };
-            var controller = new OrdersController(new Storage());
+            var controller = new OrdersController(new Storage(), new StorageApiClientFake());
             controller.Create(inputNames);
             var inputAddable = "Vacuum";
             Assert.ThrowsException<ArgumentNullException>(() => controller.RemoveAddable(1, 2, inputAddable));
         }
 
         [TestMethod]
-        public void Confirm_order_should_return_list_of_ingrediens_and_products_and_price() {
+        public async Task Confirm_order_should_return_list_of_ingrediens_and_products_and_price() {
             var inputNames = new List<string>() { "Hawaii", "Fanta", "Kebabpizza" };
-            var controller = new OrdersController(new Storage());
+            var controller = new OrdersController(new Storage(), new StorageApiClientFake());
             controller.Create(inputNames);
             var inputAddable = "Kebab";
             controller.AddAddable(1, 2, inputAddable);
-            var actual = controller.Confirm(1);
+            var actual = await controller.Confirm(1);
             Assert.AreEqual(Order.OrderStatus.Confirmed, actual.Status);
         }
 
         [TestMethod]
-        public void Confirm_order_should_throw_expected_exception_if_status_is_wrong() {
+        public async Task Confirm_order_should_throw_expected_exception_if_status_is_wrong() {
             var inputNames = new List<string>() { "Hawaii", "Fanta", "Kebabpizza" };
-            var controller = new OrdersController(new Storage());
+            var controller = new OrdersController(new Storage(), new StorageApiClientFake());
             controller.Create(inputNames);
             controller.Cancel(1);
-            Assert.ThrowsException<InvalidOperationException>(() => controller.Confirm(1));
+            await Assert.ThrowsExceptionAsync<InvalidOperationException>(() => controller.Confirm(1));
         }
 
         [TestMethod]
@@ -217,7 +219,7 @@ namespace PizzaOrder.Tests {
                 new List<string>() { "Hawaii", "Sprite", "Kebabpizza" },
                 new List<string>() { "Margarita", "Fanta", "Kebabpizza" }
             };
-            var ordersController = new OrdersController(new Storage());
+            var ordersController = new OrdersController(new Storage(), new StorageApiClientFake());
             foreach (var inputNames in inputData) {
                 ordersController.Create(inputNames);
             }
@@ -231,7 +233,7 @@ namespace PizzaOrder.Tests {
         [TestMethod]
         public void Cancel_order_should_succeed() {
             var inputNames = new List<string>() { "Hawaii", "Fanta", "Kebabpizza" };
-            var controller = new OrdersController(new Storage());
+            var controller = new OrdersController(new Storage(), new StorageApiClientFake());
             controller.Create(inputNames);
             controller.Cancel(1);
             var actual = controller.Get(1);
@@ -241,7 +243,7 @@ namespace PizzaOrder.Tests {
         [TestMethod]
         public void Cancel_order_should_throw_expected_exception_if_status_is_wrong() {
             var inputNames = new List<string>() { "Hawaii", "Fanta", "Kebabpizza" };
-            var controller = new OrdersController(new Storage());
+            var controller = new OrdersController(new Storage(), new StorageApiClientFake());
             controller.Create(inputNames);
             controller.Confirm(1);
             controller.Complete(1);
@@ -251,7 +253,7 @@ namespace PizzaOrder.Tests {
         [TestMethod]
         public void Complete_should_succeed() {
             var inputNames = new List<string>() { "Hawaii", "Fanta", "Kebabpizza" };
-            var controller = new OrdersController(new Storage());
+            var controller = new OrdersController(new Storage(), new StorageApiClientFake());
             controller.Create(inputNames);
             controller.Confirm(1);
             controller.Complete(1);
@@ -262,7 +264,7 @@ namespace PizzaOrder.Tests {
         [TestMethod]
         public void Complete_order_should_throw_expected_exception_if_status_is_wrong() {
             var inputNames = new List<string>() { "Hawaii", "Fanta", "Kebabpizza" };
-            var controller = new OrdersController(new Storage());
+            var controller = new OrdersController(new Storage(), new StorageApiClientFake());
             controller.Create(inputNames);
             Assert.ThrowsException<InvalidOperationException>(() => controller.Complete(1));
         }

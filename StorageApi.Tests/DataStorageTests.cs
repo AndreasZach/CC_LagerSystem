@@ -33,16 +33,16 @@ namespace StorageApi.Tests
             var repo = new DataStorage();
             var storageItem = repo.StoredItems.Where(x => x.ItemName == itemName).ToList();
             Assert.IsTrue(storageItem.Count(x => x.ItemName == itemName) == 1);
-            Assert.AreEqual(storageItem.First().AvailableItemsCount, itemAmount);
+            Assert.AreEqual(storageItem.First().ItemAmount, itemAmount);
         }
 
         [TestMethod]
         public void Should_change_item_amount()
         {
             var repo = new DataStorage();
-            Assert.AreEqual(repo.StoredItems.First().AvailableItemsCount, 0);
-            repo.StoredItems.First().AvailableItemsCount = 5;
-            Assert.AreEqual(repo.StoredItems.First().AvailableItemsCount, 5);
+            Assert.AreEqual(repo.StoredItems.First().ItemAmount, 0);
+            repo.StoredItems.First().ItemAmount = 5;
+            Assert.AreEqual(repo.StoredItems.First().ItemAmount, 5);
         }
     }
 }

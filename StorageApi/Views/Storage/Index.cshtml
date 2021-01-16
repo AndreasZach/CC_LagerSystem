@@ -17,7 +17,7 @@
             @Html.DisplayNameFor(model => model.ItemName)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.AvailableItemsCount) (Max 500)
+            @Html.DisplayNameFor(model => model.ItemAmount) (Max 500)
         </th>
         <th></th>
     </tr>
@@ -29,7 +29,7 @@
                 @Html.DisplayFor(modelItem => item.ItemName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.AvailableItemsCount)
+                @Html.DisplayFor(modelItem => item.ItemAmount)
             </td>
             <td>
                 <form method="post" action="@Url.Action("AddItemAmount", "Storage")" onsubmit="setTimeout(function () { window.location.reload(); }, 50)">

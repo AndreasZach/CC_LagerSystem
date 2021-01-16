@@ -17,5 +17,7 @@ namespace StorageApi.Interfaces
         void AddItemAmountToAll();
 
         IEnumerable<StorageItem> GetAllItems();
+
+        void RemoveMany(List<StorageItem> items);
     }
 }

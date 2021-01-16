@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StorageApi.Data;
 using StorageApi.Exceptions;
+using StorageApi.Models;
 using StorageApi.Tests.Fakes;
 
 namespace StorageApi.Tests
@@ -96,5 +97,49 @@ namespace StorageApi.Tests
             Assert.AreEqual(storageFake.StoredItems, repo.GetAllItems());
         }
 
+        [TestMethod]
+        public void Remove_all_item_amounts_specified_in_collection_should_succeed_without_throwing_exceptions()
+        {
+            var storageFake = new DataStorageFake(10);
+            var repo = new DataRepository(storageFake);
+            var items = new List<StorageItem>()
+            {
+                new StorageItem("Ost") {ItemAmount = 3},
+                new StorageItem("Tomat") {ItemAmount = 5}
+            };
+            repo.RemoveMany(items);
+            Assert.AreEqual(7, storageFake.StoredItems.First(
+                x => x.ItemName == "Ost").ItemAmount);
+            Assert.AreEqual(5, storageFake.StoredItems.First(
+                x => x.ItemName == "Tomat").ItemAmount);
+        }
+
+        [TestMethod]
+        public void Remove_all_item_amounts_specified_in_collection_should_throw_NotFoundException_if_an_item_cannot_be_found()
+        {
+            var storageFake = new DataStorageFake(10);
+            var repo = new DataRepository(storageFake);
+            var items = new List<StorageItem>()
+            {
+                new StorageItem("Ost") {ItemAmount = 3},
+                new StorageItem("DOES NOT EXIST") {ItemAmount = 5}
+            };
+
+            Assert.ThrowsException<NotFoundException>(() => repo.RemoveMany(items));
+        }
+
+        [TestMethod]
+        public void Remove_all_item_amounts_specified_in_collection_should_throw_EmptyStorageException_if_amount_less_than_zero()
+        {
+            var storageFake = new DataStorageFake(10);
+            var repo = new DataRepository(storageFake);
+            var items = new List<StorageItem>()
+            {
+                new StorageItem("Ost") {ItemAmount = 3},
+                new StorageItem("Tomat") {ItemAmount = 11}
+            };
+
+            Assert.ThrowsException<EmptyStorageException>(() => repo.RemoveMany(items));
+        }
     }
 }
