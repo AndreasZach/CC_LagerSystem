@@ -35,4 +35,10 @@ describe('basicFuntionality', () => {
     it('Should refresh the storageApi homepage to show current storage values', () => {
         cy.reload();
     });
+    it('Should ensure "Ost" has been removed from storage', () => {
+        cy.get('#Ost-current-amount').contains('0')
+    });
+    it('Should ensure "Tomatsås" has been removed from storage', () => {
+        cy.get('#Tomatsås-current-amount').contains('0')
+    });
 });
