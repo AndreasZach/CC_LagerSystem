@@ -23,11 +23,11 @@ namespace StorageApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult RemoveMany(List<StorageItem> items)
+        public async Task<IActionResult> RemoveMany(List<StorageItem> items)
         {
             try
             {
-                _repository.RemoveMany(items);
+                await _repository.RemoveManyAsync(items);
                 return NoContent();
             }
             catch (NotFoundException e)

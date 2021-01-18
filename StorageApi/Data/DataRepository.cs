@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using StorageApi.Exceptions;
 using StorageApi.Interfaces;
 using StorageApi.Models;
@@ -10,62 +11,65 @@ namespace StorageApi.Data
 {
     public class DataRepository : IDataRepository
     {
-        private IDataStorage _storage;
+        private StorageItemContext _context;
 
-        public DataRepository(IDataStorage storage)
+        public DataRepository(StorageItemContext context)
         {
-            _storage = storage;
+            _context = context;
         }
 
-        public int GetItemCount(string itemName)
+        public async Task<int> GetItemCountAsync(string itemName)
         {
-            var item = GetItemByName(itemName);
+            var item = await GetItemByNameAsync(itemName);
             if (item is null)
                 throw new NotFoundException("Could not find an item matching the request.");
             return item.ItemAmount;
         }
 
-        public void AddItemAmount(string itemName, int amountToAdd)
+        public async Task AddItemAmountAsync(string itemName, int amountToAdd)
         {
-            var itemToUpdate = GetItemByName(itemName);
+            var itemToUpdate = await GetItemByNameAsync(itemName);
             if (itemToUpdate is null)
                 throw  new NotFoundException("Could not find an item matching the request.");
             if (itemToUpdate.ItemAmount + amountToAdd > 500)
                 throw new FullStorageException("Item amount for requested item exceeded max storage capacity.");
-            _storage.StoredItems[_storage.StoredItems.IndexOf(itemToUpdate)].ItemAmount += amountToAdd;
+            itemToUpdate.ItemAmount += amountToAdd;
+            await _context.SaveChangesAsync();
         }
 
-        public void RemoveItemAmount(string itemName, int amountToRemove)
+        public async Task RemoveItemAmountAsync(string itemName, int amountToRemove)
         {
-            var itemToUpdate = GetItemByName(itemName);
+            var itemToUpdate = await GetItemByNameAsync(itemName);
             if (itemToUpdate is null)
                 throw  new NotFoundException("Could not find an item matching the request.");
-            var itemIndex = _storage.StoredItems.IndexOf(itemToUpdate);
             if (itemToUpdate.ItemAmount - amountToRemove < 0)
                 throw new EmptyStorageException("Item amount for requested item cannot be negative.");
-            _storage.StoredItems[itemIndex].ItemAmount -= amountToRemove;
+            itemToUpdate.ItemAmount -= amountToRemove;
+            await _context.SaveChangesAsync();
         }
 
-        public void AddItemAmountToAll()
+        public async Task AddItemAmountToAllAsync()
         {
-            if(_storage.StoredItems.Any(item => item.ItemAmount + 10 > 500))
+            if(_context.StorageItems.Any(item => item.ItemAmount + 10 > 500))
                 throw new FullStorageException($"Item amount exceeded max storage capacity.");
-            foreach (var item in _storage.StoredItems)
+            foreach (var item in await GetAllItemsAsync())
             {
                 item.ItemAmount += 10;
             }
+
+            await _context.SaveChangesAsync();
         }
 
-        public IEnumerable<StorageItem> GetAllItems()
+        public async Task<IEnumerable<StorageItem>> GetAllItemsAsync()
         {
-            return _storage.StoredItems;
+            return await _context.StorageItems.ToListAsync();
         }
 
-        public void RemoveMany(List<StorageItem> items)
+        public async Task RemoveManyAsync(List<StorageItem> items)
         {
             foreach (var item in items)
             {
-                var storedItem = GetItemByName(item?.ItemName);
+                var storedItem = await GetItemByNameAsync(item?.ItemName);
                 if(storedItem is null)
                     throw new NotFoundException("Could not find an item matching the request.");
                 if(storedItem.ItemAmount - item?.ItemAmount < 0)
@@ -73,14 +77,16 @@ namespace StorageApi.Data
             }
             foreach (var item in items)
             {
-                var storedItem = GetItemByName(item.ItemName);
-                _storage.StoredItems[_storage.StoredItems.IndexOf(storedItem)].ItemAmount -= item.ItemAmount;
+                var storedItem = await GetItemByNameAsync(item.ItemName);
+                storedItem.ItemAmount -= item.ItemAmount;
             }
+
+            await _context.SaveChangesAsync();
         }
 
-        private StorageItem GetItemByName(string itemName)
+        private async Task<StorageItem> GetItemByNameAsync(string itemName)
         {
-            return _storage.StoredItems.FirstOrDefault(x => x.ItemName == itemName);
+            return await _context.StorageItems.FirstOrDefaultAsync(x => x.ItemName == itemName);
         }
     }
 }

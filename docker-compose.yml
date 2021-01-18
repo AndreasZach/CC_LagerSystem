@@ -13,3 +13,17 @@ services:
       build:
         context: .
         dockerfile: StorageApi/Dockerfile
+      depends_on:
+       - database
+  database:
+    image: mcr.microsoft.com/mssql/server:2019-CU8-ubuntu-16.04
+    ports:
+      - "1433:1433"
+    environment:
+       - ACCEPT_EULA=Y 
+       - SA_PASSWORD=Password-1
+    volumes:
+    - quizdata:/storage/quizzes
+
+volumes:
+  quizdata: {}

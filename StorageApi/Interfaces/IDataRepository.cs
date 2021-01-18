@@ -8,16 +8,16 @@ namespace StorageApi.Interfaces
 {
     public interface IDataRepository
     {
-        int GetItemCount(string itemName);
+        Task<int> GetItemCountAsync(string itemName);
         
-        void AddItemAmount(string itemName, int amountToAdd);
+        Task AddItemAmountAsync(string itemName, int amountToAdd);
 
-        void RemoveItemAmount(string itemName, int amountToRemove);
+        Task RemoveItemAmountAsync(string itemName, int amountToRemove);
 
-        void AddItemAmountToAll();
+        Task AddItemAmountToAllAsync();
 
-        IEnumerable<StorageItem> GetAllItems();
+        Task<IEnumerable<StorageItem>> GetAllItemsAsync();
 
-        void RemoveMany(List<StorageItem> items);
+        Task RemoveManyAsync(List<StorageItem> items);
     }
 }

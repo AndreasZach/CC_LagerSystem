@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StorageApi.Data;
 using StorageApi.Exceptions;
@@ -13,133 +15,171 @@ namespace StorageApi.Tests
     [TestClass]
     public class DataRepositoryTests
     {
+
         [TestMethod]
-        public void Getting_item_count_Should_return_count_If_Successful()
+        public async Task Getting_item_count_Should_return_count_If_Successful()
         {
-            var repo = new DataRepository(new DataStorageFake(1));
-            Assert.AreEqual(1, repo.GetItemCount("Ost"));
+            var contextWithData = CreateContextWithData(1);
+            var repo = new DataRepository(contextWithData);
+            var itemCount = await repo.GetItemCountAsync("Ost");
+            Assert.AreEqual(1, itemCount);
+            await contextWithData.Database.EnsureDeletedAsync();
         }
 
         [TestMethod]
-        public void Getting_item_count_Should_throw_NotFoundException_If_no_matching_item_exists()
+        public async Task Getting_item_count_Should_throw_NotFoundException_If_no_matching_item_exists()
         {
-            var repo = new DataRepository(new DataStorageFake());
-            Assert.ThrowsException<NotFoundException>(() => 
-                repo.GetItemCount("Not an Item"));
+            var contextWithData = CreateContextWithData(0);
+            var repo = new DataRepository(contextWithData);
+            await Assert.ThrowsExceptionAsync<NotFoundException>(() => 
+                repo.GetItemCountAsync("Not an Item"));
+            await contextWithData.Database.EnsureDeletedAsync();
         }
 
         [TestMethod]
-        public void Adding_an_item_Should_be_Successful_without_throwing_exceptions()
+        public async Task Adding_an_item_Should_be_Successful_without_throwing_exceptions()
         {
-            var repo = new DataRepository(new DataStorageFake(1));
-            repo.AddItemAmount("Ost", 5);
+            var contextWithData = CreateContextWithData(1);
+            var repo = new DataRepository(contextWithData);
+            await repo.AddItemAmountAsync("Ost", 5);
+            await contextWithData.Database.EnsureDeletedAsync();
         }
 
         [TestMethod]
-        public void Adding_item_Should_throw_NotFoundException_If_no_matching_item_exists()
+        public async Task Adding_item_Should_throw_NotFoundException_If_no_matching_item_exists()
         {
-            var repo = new DataRepository(new DataStorageFake());
-            Assert.ThrowsException<NotFoundException>(() => 
-                repo.AddItemAmount("Not an Item", 5));
+            var contextWithData = CreateContextWithData(0);
+            var repo = new DataRepository(contextWithData);
+            await Assert.ThrowsExceptionAsync<NotFoundException>(() => 
+                repo.AddItemAmountAsync("Not an Item", 5));
+            await contextWithData.Database.EnsureDeletedAsync();
         }
 
         [TestMethod]
-        public void Adding_item_Should_throw_FullStorageException_If_total_amount_exceeds_max_capacity()
+        public async Task Adding_item_Should_throw_FullStorageException_If_total_amount_exceeds_max_capacity()
         {
             var maxCapacity = 500;
-            var repo = new DataRepository(new DataStorageFake());
-            Assert.ThrowsException<FullStorageException>(() => 
-                repo.AddItemAmount("Ost", maxCapacity + 1));
+            var contextWithData = CreateContextWithData(0);
+            var repo = new DataRepository(contextWithData);
+            await Assert.ThrowsExceptionAsync<FullStorageException>(() => 
+                repo.AddItemAmountAsync("Ost", maxCapacity + 1));
+            await contextWithData.Database.EnsureDeletedAsync();
         }
 
         [TestMethod]
-        public void Removing_an_item_Should_be_Successful_without_throwing_exceptions()
+        public async Task Removing_an_item_Should_be_Successful_without_throwing_exceptions()
         {
-            var repo = new DataRepository(new DataStorageFake(1));
-            repo.RemoveItemAmount("Ost", 1);
+            var contextWithData = CreateContextWithData(1);
+            var repo = new DataRepository(contextWithData);
+            await repo.RemoveItemAmountAsync("Ost", 1);
+            await contextWithData.Database.EnsureDeletedAsync();
         }
 
         [TestMethod]
-        public void Removing_item_Should_throw_NotFoundException_If_no_matching_item_exists()
+        public async Task Removing_item_Should_throw_NotFoundException_If_no_matching_item_exists()
         {
-            var repo = new DataRepository(new DataStorageFake());
-            Assert.ThrowsException<NotFoundException>(() => 
-                repo.RemoveItemAmount("Not an Item", 5));
+            var contextWithData = CreateContextWithData(0);
+            var repo = new DataRepository(contextWithData);
+            await Assert.ThrowsExceptionAsync<NotFoundException>(() => 
+                repo.RemoveItemAmountAsync("Not an Item", 5));
+            await contextWithData.Database.EnsureDeletedAsync();
         }
 
         [TestMethod]
-        public void Removing_item_Should_throw_EmptyStorageException_If_total_amount_becomes_less_than_zero()
+        public async Task Removing_item_Should_throw_EmptyStorageException_If_total_amount_becomes_less_than_zero()
         {
-            var repo = new DataRepository(new DataStorageFake());
-            Assert.ThrowsException<EmptyStorageException>(() => 
-                repo.RemoveItemAmount("Ost", 1));
+            var contextWithData = CreateContextWithData(0);
+            var repo = new DataRepository(contextWithData);
+            await Assert.ThrowsExceptionAsync<EmptyStorageException>(() => 
+                repo.RemoveItemAmountAsync("Ost", 1));
+            await contextWithData.Database.EnsureDeletedAsync();
         }
 
         [TestMethod]
-        public void Add_items_to_all_Should_succeed_without_throwing_exceptions()
+        public async Task Add_items_to_all_Should_succeed_without_throwing_exceptions()
         {
-            var repo = new DataRepository(new DataStorageFake());
-            repo.AddItemAmountToAll();
+            var contextWithData = CreateContextWithData(0);
+            var repo = new DataRepository(contextWithData);
+            await repo.AddItemAmountToAllAsync();
+            await contextWithData.Database.EnsureDeletedAsync();
         }
 
         [TestMethod]
-        public void Add_items_to_all_Should_throw_FullStorageException_If_any_item_exceeds_storage_capacity()
+        public async Task Add_items_to_all_Should_throw_FullStorageException_If_any_item_exceeds_storage_capacity()
         {
-            var repo = new DataRepository(new DataStorageFake(499));
-            Assert.ThrowsException<FullStorageException>(() => repo.AddItemAmountToAll());
+            var contextWithData = CreateContextWithData(499);
+            var repo = new DataRepository(contextWithData);
+            await Assert.ThrowsExceptionAsync<FullStorageException>(() => repo.AddItemAmountToAllAsync());
+            await contextWithData.Database.EnsureDeletedAsync();
         }
 
         [TestMethod]
-        public void Getting_all_storage_items_Should_return_collection_of_items()
+        public async Task Getting_all_storage_items_Should_return_collection_of_items()
         {
-            var storageFake = new DataStorageFake(10);
-            var repo = new DataRepository(storageFake);
-            Assert.AreEqual(storageFake.StoredItems, repo.GetAllItems());
+            var contextWithData = CreateContextWithData(10);
+            var repo = new DataRepository(contextWithData);
+            var resultData = await repo.GetAllItemsAsync();
+            Assert.AreEqual(contextWithData.StorageItems.Count(), resultData.Count());
+            await contextWithData.Database.EnsureDeletedAsync();
         }
 
         [TestMethod]
-        public void Remove_all_item_amounts_specified_in_collection_should_succeed_without_throwing_exceptions()
+        public async Task Remove_all_item_amounts_specified_in_collection_should_succeed_without_throwing_exceptions()
         {
-            var storageFake = new DataStorageFake(10);
-            var repo = new DataRepository(storageFake);
+            var contextWithData = CreateContextWithData(10);
+            var repo = new DataRepository(contextWithData);
             var items = new List<StorageItem>()
             {
                 new StorageItem("Ost") {ItemAmount = 3},
                 new StorageItem("Tomat") {ItemAmount = 5}
             };
-            repo.RemoveMany(items);
-            Assert.AreEqual(7, storageFake.StoredItems.First(
+            await repo.RemoveManyAsync(items);
+            Assert.AreEqual(7, contextWithData.StorageItems.First(
                 x => x.ItemName == "Ost").ItemAmount);
-            Assert.AreEqual(5, storageFake.StoredItems.First(
+            Assert.AreEqual(5, contextWithData.StorageItems.First(
                 x => x.ItemName == "Tomat").ItemAmount);
+            await contextWithData.Database.EnsureDeletedAsync();
         }
 
         [TestMethod]
-        public void Remove_all_item_amounts_specified_in_collection_should_throw_NotFoundException_if_an_item_cannot_be_found()
+        public async Task Remove_all_item_amounts_specified_in_collection_should_throw_NotFoundException_if_an_item_cannot_be_found()
         {
-            var storageFake = new DataStorageFake(10);
-            var repo = new DataRepository(storageFake);
+            var contextWithData = CreateContextWithData(10);
+            var repo = new DataRepository(contextWithData);
             var items = new List<StorageItem>()
             {
                 new StorageItem("Ost") {ItemAmount = 3},
                 new StorageItem("DOES NOT EXIST") {ItemAmount = 5}
             };
 
-            Assert.ThrowsException<NotFoundException>(() => repo.RemoveMany(items));
+            await Assert.ThrowsExceptionAsync<NotFoundException>(() => repo.RemoveManyAsync(items));
+            await contextWithData.Database.EnsureDeletedAsync();
         }
 
         [TestMethod]
-        public void Remove_all_item_amounts_specified_in_collection_should_throw_EmptyStorageException_if_amount_less_than_zero()
+        public async Task Remove_all_item_amounts_specified_in_collection_should_throw_EmptyStorageException_if_amount_less_than_zero()
         {
-            var storageFake = new DataStorageFake(10);
-            var repo = new DataRepository(storageFake);
+            var contextWithData = CreateContextWithData(10);
+            var repo = new DataRepository(contextWithData);
             var items = new List<StorageItem>()
             {
                 new StorageItem("Ost") {ItemAmount = 3},
                 new StorageItem("Tomat") {ItemAmount = 11}
             };
 
-            Assert.ThrowsException<EmptyStorageException>(() => repo.RemoveMany(items));
+            await Assert.ThrowsExceptionAsync<EmptyStorageException>(() => repo.RemoveManyAsync(items));
+            await contextWithData.Database.EnsureDeletedAsync();
+        }
+
+        private StorageItemContext CreateContextWithData(int itemAmountPerItem) {
+            var testData = new TestData().GetDefaultTestData(itemAmountPerItem);
+            var options = new DbContextOptionsBuilder<StorageItemContext>()
+                .UseInMemoryDatabase(databaseName: "MockStorageItemDatabase")
+                .Options;
+            var storageItemContext = new StorageItemContext(options);
+            storageItemContext.StorageItems.AddRange(testData);
+            storageItemContext.SaveChanges();
+            return storageItemContext;
         }
     }
 }

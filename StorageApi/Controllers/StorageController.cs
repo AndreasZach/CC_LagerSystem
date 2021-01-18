@@ -20,11 +20,11 @@ namespace StorageApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetItemCount(string id)
+        public async Task<IActionResult> GetItemCount(string id)
         {
             try
             {
-                return Ok(_repository.GetItemCount(id));
+                return Ok(await _repository.GetItemCountAsync(id));
             }
             catch (NotFoundException e)
             {
@@ -33,11 +33,11 @@ namespace StorageApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddItemAmount(string id, int amountToAdd)
+        public async Task<IActionResult> AddItemAmount(string id, int amountToAdd)
         {
             try
             {
-                _repository.AddItemAmount(id, amountToAdd);
+                await _repository.AddItemAmountAsync(id, amountToAdd);
                 return NoContent();
             }
             catch (NotFoundException e)
@@ -51,11 +51,11 @@ namespace StorageApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult RemoveItemAmount(string id, int amountToRemove)
+        public async Task<IActionResult> RemoveItemAmount(string id, int amountToRemove)
         {
             try
             {
-                _repository.RemoveItemAmount(id, amountToRemove);
+                await _repository.RemoveItemAmountAsync(id, amountToRemove);
                 return NoContent();
             }
             catch (NotFoundException e)
@@ -69,11 +69,11 @@ namespace StorageApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddItemAmountToAll()
+        public async Task<IActionResult> AddItemAmountToAll()
         {
             try
             {
-                _repository.AddItemAmountToAll();
+                await _repository.AddItemAmountToAllAsync();
                 return NoContent();
             }
             catch (FullStorageException e)
@@ -82,9 +82,9 @@ namespace StorageApi.Controllers
             }
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View(_repository.GetAllItems());
+            return View(await _repository.GetAllItemsAsync());
         }
     }
 }
