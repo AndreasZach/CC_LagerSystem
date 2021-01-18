@@ -1,17 +1,21 @@
-# PizzaOrder
+# LagerSystem
 
 Andreas Zachrisson
-Tommy Karlsson
 
-# Factory Pattern (OrderableFactory.cs)
-För att skapa instanser av Pizzor och Drycker, utan att behöva veta typen. 
-Det skapar också alla varianter av Pizzor och Drycker som ska finnas och därmed abstraherar vi bort nödvändigheten att veta tex alla ingredienser av en Margarita. 
-
-# Visitor Pattern (OrderableVisitor.cs, PizzaVisitor.cs, DrinkVisitor.cs)
-Genom att implementera Visitor Pattern så säkerställer vi att vi inte har logik i objekten Pizza och Drink. 
-Istället implementerar vi logiken för att tex summera totalpris för objekten i en Visitor.
-
-# Decorator Pattern (OrderablePriceDecorator.cs)
-Genom att implementera en Decorator för vår OrderableVisitor så möjliggör vi att ställa logik som inte hör till någon av våra Visitors på ett ställe. Tex att summera priset av Pizzor och Drink tillsammans, eller i framtiden att kunna ändra lagersaldo beroende på ingredienser mm.
+# Repository Pattern (DataRepository.cs)
+Använde mig av ett simpelt Repository pattern av två andledningar:
+	 1. Jag ville separera min business logik för att hantera data från min kontroller, så att min kontroller följer Single Responsibility principle.
+	 2. Genom att lägga ansvaret för datahantering på ett repository, kan jag enklare implementera Open-Close principle till en rimlig nivå.
+	
+	(Lägg in kort beskrivning av Visitor / decorator)
+	Jag Skulle kunna ha använt mig av Visitor/Decorator pattern för att hantera lagerstatus, samt logik relaterat till att 
+		hantera eventuella saker som måste hanteras (ex kolla så att items inte hamnar negativt i count.
+		Dock ansåg jag att ett Repository pattern som använder sig av foreach/Linq uttryck (Inbyggda visitor patterns egentligen), 
+		var ett bättre val överlag av de anledningar jag givit ovan.
+		
+# Instruktioner
+Se till at Cypress är installerat genom att köra "npm install Cypress --save-dev" kommando i Kommandotolken.
+Starta appen genom Docker-Compose filen.
+Kör E2E tester via "npm test" kommando i Kommandotolken.
 
 
