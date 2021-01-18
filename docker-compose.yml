@@ -6,6 +6,8 @@ services:
     build:
       context: .
       dockerfile: PizzaOrder/Dockerfile
+    depends_on:
+     - storage
   storage:
       image: ${DOCKER_REGISTRY-}storage
       build:
