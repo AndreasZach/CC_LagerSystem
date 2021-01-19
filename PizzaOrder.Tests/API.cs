@@ -268,6 +268,16 @@ namespace PizzaOrder.Tests {
             controller.Create(inputNames);
             Assert.ThrowsException<InvalidOperationException>(() => controller.Complete(1));
         }
+
+        [TestMethod]
+        public void Delete_order_should_delete_order_with_matching_id() {
+            var inputNames = new List<string>() { "Hawaii", "Fanta", "Kebabpizza" };
+            var controller = new OrdersController(new Storage(), new StorageApiClientFake());
+            controller.Create(inputNames);
+            Assert.AreEqual(1, controller.Get(1).Id);
+            controller.DeleteOrder(1);
+            Assert.AreEqual(null, controller.Get(1));
+        }
     }
 }
 

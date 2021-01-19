@@ -42,4 +42,12 @@ describe('basicFuntionality', () => {
         cy.reload();
         cy.get('#Tomatsås-current-amount').contains('0')
     });
+    it('Should remove the order created through Ajax successfully', () => {
+        cy.request({
+            method: 'DELETE',
+            url: PIZZA_ORDER_BASE_URL + 'Delete?orderId=' + currentIndex,
+        }).then((response) => {
+          expect(response.status).to.eq(200)
+        })
+    });
 });

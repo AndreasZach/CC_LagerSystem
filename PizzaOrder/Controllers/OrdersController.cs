@@ -123,5 +123,13 @@ namespace PizzaOrder.Controllers {
                 throw new InvalidOperationException("Can only confirm orders with OrderStatus 'Confirmed'");
             }
         }
+        
+        [HttpDelete("/Delete")]
+        public void DeleteOrder(int orderId)
+        {
+            var order = Get(orderId);
+            if(order is not null)
+                _storage.data.Remove(order);
+        }
     }
 }
